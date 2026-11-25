@@ -1,6 +1,6 @@
 # Fundamenta Experience
 
-Frontend en React, TypeScript y Vite que presenta Eco Egaña Norte con una experiencia arquitectónica interactiva inspirada en [el reel de referencia](https://www.instagram.com/reel/DgJoF00t0N8/). Combina los logos y renders oficiales de Fundamenta con un modelo 3D creado en Blender y mostrado en el navegador con Three.js.
+Frontend en React, TypeScript y Vite que presenta Eco Egaña Norte con una experiencia arquitectónica interactiva. Combina los logos y renders oficiales de Fundamenta con un modelo 3D creado en Blender y mostrado en el navegador con Three.js.
 
 El visor permite orbitar alrededor del edificio, acercar y alejar la cámara, seleccionar pisos y alternar entre iluminación de día y atardecer.
 
