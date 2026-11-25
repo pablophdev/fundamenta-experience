@@ -107,7 +107,7 @@ export default function App() {
           <a className="button button-lime" href="#proyecto">Conoce el proyecto <Plus size={17} /></a>
         </div>
         <button className="building-hotspot" onClick={() => setExplorerOpen(true)} aria-label="Explorar el edificio Eco Egaña Norte">
-          <span className="hotspot-cross"><Plus size={21} /></span><span className="hotspot-label">EXPLORA EL EDIFICIO<span>Una mirada más cerca</span></span>
+          <span className="hotspot-cross"><Plus size={21} /></span><span className="hotspot-label">EXPLORA EN 3D<span>Gira, acerca y descubre</span></span>
         </button>
         <div className="hero-bottom">
           <a className="scroll-cue" href="#proyecto"><span className="scroll-circle"><ChevronDown size={17} /></span><span>Hay mucho por descubrir</span></a>
@@ -124,7 +124,7 @@ export default function App() {
       <section className="project-section section-wrap" id="proyecto">
         <div className="project-intro reveal"><div><span className="eyebrow"><span className="short-line" /> EL PROYECTO</span><h2>Un lugar a la altura<br />de <span className="text-muted">tu próxima historia.</span></h2></div><p>El movimiento de la ciudad y la tranquilidad de estar en casa. Eco Egaña Norte reúne arquitectura y conexión en un nuevo punto de encuentro en Ñuñoa.</p></div>
         <div className="project-feature reveal">
-          <div className="project-photo"><img src={ASSETS + 'eco-egana-day.webp'} alt="Fachada de Eco Egaña Norte y Plaza Egaña, render oficial de Fundamenta" loading="lazy" /><button onClick={() => setExplorerOpen(true)} className="photo-explore"><Maximize2 size={17} /> Explorar edificio</button><span className="photo-caption">ECO EGAÑA NORTE · ÑUÑOA</span></div>
+          <div className="project-photo"><img src={ASSETS + 'eco-egana-day.webp'} alt="Fachada de Eco Egaña Norte y Plaza Egaña, render oficial de Fundamenta" loading="lazy" /><button onClick={() => setExplorerOpen(true)} className="photo-explore"><Maximize2 size={17} /> Explorar en 3D</button><span className="photo-caption">ECO EGAÑA NORTE · ÑUÑOA</span></div>
           <div className="project-details"><img className="project-logo" src={ASSETS + 'eco-egana-logo.webp'} alt="Eco Egaña Norte" loading="lazy" /><span className="tag">ENTREGA FUTURA</span><h3>Tu nuevo comienzo,<br />bien conectado.</h3><p className="address"><MapPin size={17} /> Av. Irarrázaval 5651, Ñuñoa</p><div className="specs"><div><strong>1 y 2</strong><span>Dormitorios</span></div><div><strong>32 <small>m²</small></strong><span>Superficies desde</span></div></div><a href={QUOTE} className="button button-dark" target="_blank" rel="noreferrer">Ver departamentos <Plus size={17} /></a><p className="details-note">Consulta tipologías y disponibilidad en Fundamenta.</p></div>
         </div>
       </section>
@@ -148,7 +148,7 @@ export default function App() {
 
       <section className="visit-section"><div className="visit-glow" /><div className="section-wrap reveal"><span className="eyebrow">EL SIGUIENTE PASO ES TUYO</span><h2>Imagina tu vida aquí.<br /><span>Ven a conocerla.</span></h2><a href={VISIT} target="_blank" rel="noreferrer" className="button button-lime">Agenda tu visita <Plus size={18} /></a><p>Conoce el proyecto con el equipo de Fundamenta.</p></div><span className="visit-watermark" aria-hidden="true">F</span></section>
     </main>
-    <footer className="site-footer section-wrap"><div className="footer-top"><a href="#inicio" aria-label="Volver al inicio"><img src={ASSETS + 'fundamenta-logo-white.svg'} width="185" height="42" alt="Fundamenta" /></a><span>Arquitectura para tu próxima historia.</span><a href="https://www.fundamenta.cl/proyectos/eco-egana-norte/" target="_blank" rel="noreferrer">Visita Fundamenta <MoveUpRight size={15} /></a></div><div className="footer-bottom"><span>Concepto digital independiente · React</span><p>Imágenes y marcas de Fundamenta. Renders referenciales. La exploración de pisos es ilustrativa.</p><a href="#inicio">Volver arriba</a></div></footer>
+    <footer className="site-footer section-wrap"><div className="footer-top"><a href="#inicio" aria-label="Volver al inicio"><img src={ASSETS + 'fundamenta-logo-white.svg'} width="185" height="42" alt="Fundamenta" /></a><span>Arquitectura para tu próxima historia.</span><a href="https://www.fundamenta.cl/proyectos/eco-egana-norte/" target="_blank" rel="noreferrer">Visita Fundamenta <MoveUpRight size={15} /></a></div><div className="footer-bottom"><span>Concepto digital independiente · React + Blender</span><p>Imágenes y marcas de Fundamenta. Renders referenciales. El modelo 3D y la exploración de pisos son conceptuales.</p><a href="#inicio">Volver arriba</a></div></footer>
     <a className="floating-visit" href={VISIT} target="_blank" rel="noreferrer">Agenda tu visita <Plus size={17} /></a>
     {explorerOpen && <BuildingExplorer onClose={closeExplorer} initialMode={mode} />}
     {gallery !== null && <Gallery index={gallery} onClose={closeGallery} />}

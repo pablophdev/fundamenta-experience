@@ -48,18 +48,22 @@ describe('Recorrido de Fundamenta', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('selecciona pisos desde la fachada y limita los controles al rango ilustrativo', () => {
+  it('mantiene el selector de pisos disponible cuando el visor no puede iniciarse', () => {
     render(<BuildingExplorer onClose={vi.fn()} />);
     const slider = screen.getByRole('slider') as HTMLInputElement;
-    fireEvent.click(screen.getByRole('button', { name: 'Explorar piso 25' }));
+    expect(screen.getByText(/La vista 3D no está disponible/)).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Descargar modelo 3D (.glb)' }).getAttribute('href')).toBe('/models/eco-egana.glb');
+    fireEvent.change(slider, { target: { value: '25' } });
     expect(slider.value).toBe('25');
     fireEvent.click(screen.getByRole('button', { name: 'Subir un piso' }));
     expect(slider.value).toBe('26');
     expect((screen.getByRole('button', { name: 'Subir un piso' }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Explorar piso 26' }), { key: 'ArrowDown' });
+    fireEvent.click(screen.getByRole('button', { name: 'Bajar un piso' }));
     expect(slider.value).toBe('25');
-    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Explorar piso 25' }));
     fireEvent.change(slider, { target: { value: '3' } });
     expect((screen.getByRole('button', { name: 'Bajar un piso' }) as HTMLButtonElement).disabled).toBe(true);
+    const day = screen.getByRole('button', { name: 'Día', exact: true });
+    fireEvent.click(day);
+    expect(screen.getByRole('img', { name: 'Render de referencia de Eco Egaña Norte' }).getAttribute('src')).toContain('-day.webp');
   });
 });

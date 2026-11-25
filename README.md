@@ -1,6 +1,10 @@
 # Fundamenta Experience
 
-Frontend en React, TypeScript y Vite que presenta Eco Egaña Norte con una experiencia arquitectónica interactiva inspirada en [el reel de referencia](https://www.instagram.com/reel/DgJoF00t0N8/). Usa los logos y renders oficiales de Fundamenta, incluyendo vistas diurna y al atardecer.
+Frontend en React, TypeScript y Vite que presenta Eco Egaña Norte con una experiencia arquitectónica interactiva inspirada en [el reel de referencia](https://www.instagram.com/reel/DgJoF00t0N8/). Combina los logos y renders oficiales de Fundamenta con un modelo 3D creado en Blender y mostrado en el navegador con Three.js.
+
+El visor permite orbitar alrededor del edificio, acercar y alejar la cámara, seleccionar pisos y alternar entre iluminación de día y atardecer.
+
+Cuando WebGL no está disponible, el visor utiliza una vista 3D simplificada con SVGRenderer: conserva la geometría y los controles de cámara, con materiales, texturas y sombras simplificados. Si tampoco puede cargar esa vista, muestra el render de referencia y permite descargar el modelo GLB.
 
 ## Desarrollo local
 
@@ -18,28 +22,32 @@ npm run build
 npm run preview
 ```
 
-Pruebas de interacción: `npm test` (iluminación, espacios, galería, explorador, teclado y foco).
+```sh
+npm test
+```
+
+Las pruebas de interacción cubren iluminación, espacios, galería, explorador, teclado y foco. GitHub Actions ejecuta el build en los pushes a `main` y en las pull requests.
 
 El resultado se genera en `dist/`. No se necesitan claves ni variables de entorno para usar el frontend.
 
-## Despliegue en Render
+## Modelo 3D con Blender
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/pablophdev/fundamenta-experience)
+El modelo arquitectónico es conceptual y está basado en los renders oficiales de Eco Egaña Norte. Sus proporciones, detalles y pisos sirven para la experiencia interactiva; no constituyen un modelo BIM ni una reproducción de planos de obra.
 
-El repositorio incluye un Blueprint en [`render.yaml`](render.yaml). El botón abre la configuración de Render; el sitio se publica cuando se autoriza y completa ese despliegue en la cuenta de Render.
+Con Blender instalado y disponible como `blender` en la terminal, ejecuta este comando desde la raíz del proyecto para regenerar los archivos:
 
-También puedes crear un **Static Site** en Render, conectar este repositorio y configurar:
+```sh
+blender -b -t 2 -P blender/build_eco_egana.py
+```
 
-| Campo | Valor |
+| Archivo | Uso |
 | --- | --- |
-| Build command | `npm ci && npm run build` |
-| Publish directory | `dist` |
-| Node.js | `22` |
-| Rewrite | `/*` → `/index.html` |
+| [`blender/build_eco_egana.py`](blender/build_eco_egana.py) | Script reproducible de construcción, exportación y vista previa |
+| [`blender/eco-egana.blend`](blender/eco-egana.blend) | Escena editable en Blender |
+| [`public/models/eco-egana.glb`](public/models/eco-egana.glb) | Modelo glTF binario que carga el visor Three.js |
+| [`blender/preview.png`](blender/preview.png) | Vista previa del modelo generada en Blender |
 
-El Blueprint habilita el despliegue automático al recibir commits. GitHub Actions comprueba que el frontend se construya en los pushes a `main` y en las pull requests.
-
-Documentación oficial: [Static Sites](https://render.com/docs/static-sites) y [Blueprint YAML Reference](https://render.com/docs/blueprint-spec).
+Blender solo se necesita para editar o regenerar el modelo. Para ejecutar el frontend basta con los recursos exportados incluidos en el repositorio y los comandos de npm anteriores. Tras cambiar el GLB, vuelve a generar `dist/` con `npm run build`.
 
 ## Alcance y fuentes
 

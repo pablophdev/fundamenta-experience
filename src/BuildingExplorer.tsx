@@ -1,27 +1,12 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import { X, Sun, Moon, Minus, Plus, MapPin, Layers3, MoveVertical } from 'lucide-react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { X, Sun, Moon, Minus, Plus, MapPin, Layers3, Rotate3D } from 'lucide-react';
+import BuildingScene from './BuildingScene';
 import './explorer.css';
 
 type Mode = 'day' | 'dusk';
 interface BuildingExplorerProps {
   onClose: () => void;
   initialMode?: Mode;
-}
-
-const floors = Array.from({ length: 24 }, (_, index) => 26 - index);
-
-function floorPolygon(floor: number, mode: Mode) {
-  const top = (26 - floor) / 24;
-  const bottom = (27 - floor) / 24;
-  const leftX = 500;
-  const rightX = mode === 'day' ? 815 : 820;
-  const leftTop = mode === 'day' ? 200 : 180;
-  const rightTop = mode === 'day' ? 224 : 280;
-  const leftBottom = mode === 'day' ? 765 : 800;
-  const rightBottom = mode === 'day' ? 765 : 810;
-  const leftAt = (progress: number) => leftTop + (leftBottom - leftTop) * progress;
-  const rightAt = (progress: number) => rightTop + (rightBottom - rightTop) * progress;
-  return `${leftX},${leftAt(top)} ${rightX},${rightAt(top)} ${rightX},${rightAt(bottom)} ${leftX},${leftAt(bottom)}`;
 }
 
 export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: BuildingExplorerProps) {
@@ -67,55 +52,28 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
     };
   }, [onClose]);
 
-  function changeFloor(value: number) {
+  const changeFloor = useCallback((value: number) => {
     setHoverFloor(null);
     setFloor(Math.max(3, Math.min(26, value)));
-  }
+  }, []);
 
   return (
     <div className="explorer" role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descriptionId} ref={dialogRef}>
       <div className="explorer-scene">
-        <svg className="explorer-building" viewBox="0 0 1500 1070" preserveAspectRatio="xMidYMid slice" aria-label="Fachada interactiva de Eco Egaña Norte">
-          <image className={`explorer-photo ${mode === 'day' ? 'explorer-photo-visible' : ''}`} href="/assets/eco-egana-day.webp" width="1500" height="1070" />
-          <image className={`explorer-photo ${mode === 'dusk' ? 'explorer-photo-visible' : ''}`} href="/assets/eco-egana-dusk.webp" width="1500" height="1070" />
-          <g onMouseLeave={() => setHoverFloor(null)}>
-            {floors.map((item) => (
-              <polygon
-                key={item}
-                data-floor={item}
-                className={`explorer-floor ${item === activeFloor ? 'explorer-floor-active' : ''}`}
-                points={floorPolygon(item, mode)}
-                role="button"
-                tabIndex={0}
-                aria-label={`Explorar piso ${item}`}
-                aria-pressed={item === floor}
-                onMouseEnter={() => setHoverFloor(item)}
-                onClick={() => changeFloor(item)}
-                onFocus={() => setHoverFloor(item)}
-                onBlur={() => setHoverFloor(null)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    changeFloor(item);
-                  }
-                  if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                    event.preventDefault();
-                    const next = Math.max(3, Math.min(26, item + (event.key === 'ArrowUp' ? 1 : -1)));
-                    changeFloor(next);
-                    dialogRef.current?.querySelector<SVGElement>(`[data-floor="${next}"]`)?.focus();
-                  }
-                }}
-              />
-            ))}
-          </g>
-        </svg>
+        <BuildingScene
+          mode={mode}
+          selectedFloor={floor}
+          hoveredFloor={hoverFloor}
+          onFloorSelect={changeFloor}
+          onFloorHover={setHoverFloor}
+        />
       </div>
       <div className="explorer-shade" />
       <header className="explorer-header">
         <a className="explorer-brand" href="#inicio" onClick={(event) => { event.preventDefault(); onClose(); }} aria-label="Volver al inicio de Fundamenta">
           <img src="/assets/fundamenta-logo-white.svg" alt="Fundamenta" />
         </a>
-        <p className="explorer-header-label">Una nueva perspectiva</p>
+        <p className="explorer-header-label">Modelado en Blender · Explora en 3D</p>
         <button ref={closeRef} className="explorer-close" onClick={onClose} aria-label="Cerrar explorador"><X size={22} /></button>
       </header>
       <div className="explorer-caption">
@@ -123,9 +81,9 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
         <h2 id={titleId}>Eco Egaña Norte</h2>
         <p>Descubre la ciudad desde tu próximo hogar.</p>
       </div>
-      <div className="explorer-instruction"><MoveVertical size={17} /><span>Recorre la fachada y elige un piso</span></div>
+      <div className="explorer-instruction"><Rotate3D size={17} /><span>Arrastra para girar · Toca un piso para explorarlo</span></div>
       <section className="explorer-panel" aria-label="Control de exploración">
-        <div className="explorer-panel-top"><span><Layers3 size={15} /> EXPLORAR EDIFICIO</span><span className="explorer-small-label">VISTA INTERACTIVA</span></div>
+        <div className="explorer-panel-top"><span><Layers3 size={15} /> EXPLORAR EDIFICIO</span><span className="explorer-small-label">MODELO 3D</span></div>
         <div className="explorer-floor-display" aria-live="polite" aria-atomic="true"><span>Piso</span><strong>{activeFloor.toString().padStart(2, '0')}</strong></div>
         <p className="explorer-floor-intro">Una nueva perspectiva<br />de Ñuñoa.</p>
         <div className="explorer-range-label"><label htmlFor={floorId}>Selecciona un piso</label><span>03 — 26</span></div>
@@ -136,13 +94,13 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
         </div>
         <div className="explorer-features"><span><strong>1 y 2</strong> dormitorios</span><span><strong>Desde 32 m²</strong> en el proyecto</span></div>
         <a className="explorer-cta" href="https://www.fundamenta.cl/cotizar-proyecto/?proyecto=eco-egana-norte" target="_blank" rel="noreferrer">Ver departamentos</a>
-        <p id={descriptionId} className="explorer-note">Exploración conceptual · Sin disponibilidad en tiempo real. Los pisos son ilustrativos.</p>
+        <p id={descriptionId} className="explorer-note">Modelo 3D conceptual · Sin disponibilidad en tiempo real. Los pisos son ilustrativos.</p>
       </section>
       <div className="explorer-mode" role="group" aria-label="Iluminación del edificio">
         <button className={mode === 'day' ? 'explorer-mode-active' : ''} onClick={() => setMode('day')} aria-pressed={mode === 'day'}><Sun size={17} />Día</button>
         <button className={mode === 'dusk' ? 'explorer-mode-active' : ''} onClick={() => setMode('dusk')} aria-pressed={mode === 'dusk'}><Moon size={17} />Atardecer</button>
       </div>
-      <p className="explorer-render-note">Imágenes referenciales del proyecto</p>
+      <p className="explorer-render-note">Arquitectura reinterpretada en Blender</p>
     </div>
   );
 }
