@@ -62,11 +62,15 @@ Los datos del proyecto se verificaron el 25 de noviembre de 2026 y pueden cambia
 
 ## GitHub Pages
 
-El workflow `Deploy to GitHub Pages` comprueba el proyecto, construye con
-`GITHUB_PAGES=true` y publica `dist/` automáticamente al actualizar `main`.
-Las imágenes y el GLB usan la ruta base `/fundamenta-experience/` en ese build.
-El desarrollo local conserva la ruta raíz `/`.
+La rama `gh-pages` contiene la web compilada, incluyendo imágenes y el modelo GLB.
+No requiere un workflow de despliegue propio. Configuración del repositorio:
+**Settings → Pages → Source: Deploy from a branch → Branch: gh-pages → /(root) → Save**.
 
-Configuración inicial del repositorio: **Settings → Pages → Build and deployment →
-Source: GitHub Actions**. Después puede ejecutarse **Actions → Deploy to GitHub
-Pages → Run workflow**. El workflow publica su URL en el entorno `github-pages`.
+Para construir futuras versiones con la ruta de Pages:
+
+```sh
+GITHUB_PAGES=true npm run build
+```
+
+El contenido de `dist/` se publica en la raíz de `gh-pages`, incluyendo un archivo
+`.nojekyll`. El desarrollo local conserva la ruta raíz `/`.
