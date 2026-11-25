@@ -59,3 +59,14 @@ Esta es una propuesta conceptual de frontend. No representa una plataforma ofici
 - [`public/assets/sources.json`](public/assets/sources.json) registra las URLs de origen de los recursos visuales descargados del sitio de Fundamenta. Las marcas e imágenes pertenecen a sus respectivos titulares; no se concede una licencia adicional sobre esos recursos.
 
 Los datos del proyecto se verificaron el 25 de noviembre de 2026 y pueden cambiar. El frontend no recoge datos personales ni envía formularios a un backend propio.
+
+## GitHub Pages
+
+El workflow `Deploy to GitHub Pages` comprueba el proyecto, construye con
+`GITHUB_PAGES=true` y publica `dist/` automáticamente al actualizar `main`.
+Las imágenes y el GLB usan la ruta base `/fundamenta-experience/` en ese build.
+El desarrollo local conserva la ruta raíz `/`.
+
+Configuración inicial del repositorio: **Settings → Pages → Build and deployment →
+Source: GitHub Actions**. Después puede ejecutarse **Actions → Deploy to GitHub
+Pages → Run workflow**. El workflow publica su URL en el entorno `github-pages`.

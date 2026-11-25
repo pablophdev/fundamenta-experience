@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type * as THREE from 'three';
 import type { SVGRenderer as SVGRendererType } from 'three/addons/renderers/SVGRenderer.js';
 import { LoaderCircle, RotateCcw, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Box } from 'lucide-react';
+import { assetPath } from './asset-path';
 import './scene.css';
 
 interface BuildingSceneProps {
@@ -220,7 +221,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         renderer.domElement.remove();
         apiRef.current = null;
       };
-      const gltf = await new GLTFLoader().loadAsync('/models/eco-egana.glb', event => {
+      const gltf = await new GLTFLoader().loadAsync(assetPath('models/eco-egana.glb'), event => {
         if (!disposed && event.total) setProgress(Math.round(event.loaded / event.total * 100));
       });
       if (disposed) {
@@ -284,7 +285,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
   useEffect(() => { apiRef.current?.update(); }, [props.mode, props.selectedFloor, props.hoveredFloor]);
 
   return <div className={`building-scene building-scene-${props.mode}`} data-state={state}>
-    {state === 'fallback' ? <div className="scene-fallback"><img src={`/assets/eco-egana-${props.mode === 'day' ? 'day' : 'dusk'}.webp`} alt="Render de referencia de Eco Egaña Norte" /><p>La vista 3D no está disponible en este dispositivo. Puedes seguir explorando con el selector de pisos.</p><a href="/models/eco-egana.glb" download>Descargar modelo 3D (.glb)</a></div> : <>
+    {state === 'fallback' ? <div className="scene-fallback"><img src={assetPath(`assets/eco-egana-${props.mode === 'day' ? 'day' : 'dusk'}.webp`)} alt="Render de referencia de Eco Egaña Norte" /><p>La vista 3D no está disponible en este dispositivo. Puedes seguir explorando con el selector de pisos.</p><a href={assetPath('models/eco-egana.glb')} download>Descargar modelo 3D (.glb)</a></div> : <>
       <div ref={containerRef} className="scene-canvas" role="group" tabIndex={0} aria-label="Edificio en 3D. Flechas izquierda y derecha para girar, arriba y abajo para cambiar piso, más y menos para zoom, cero para reiniciar." onKeyDown={event => {
         if (!apiRef.current) return;
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); apiRef.current.rotate(event.key === 'ArrowLeft' ? -.7 : .7); }

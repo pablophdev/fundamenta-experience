@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Plus, X, Menu, MapPin, Sun, Moon, ChevronDown, ChevronLeft, ChevronRight, MoveUpRight, Maximize2, Building2, TrainFront, Leaf, Check } from 'lucide-react';
 import BuildingExplorer from './BuildingExplorer';
+import { assetPath } from './asset-path';
 
 type SceneMode = 'day' | 'dusk';
-const ASSETS = '/assets/';
+const ASSETS = assetPath('assets/');
 const VISIT = 'https://www.fundamenta.cl/agenda-tu-visita/?proyecto=eco-egana-norte';
 const QUOTE = 'https://www.fundamenta.cl/cotizar-proyecto/?proyecto=eco-egana-norte';
 const spaces = [

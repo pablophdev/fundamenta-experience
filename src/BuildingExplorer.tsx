@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { X, Sun, Moon, Minus, Plus, MapPin, Layers3, Rotate3D } from 'lucide-react';
 import BuildingScene from './BuildingScene';
+import { assetPath } from './asset-path';
 import './explorer.css';
 
 type Mode = 'day' | 'dusk';
@@ -71,7 +72,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
       <div className="explorer-shade" />
       <header className="explorer-header">
         <a className="explorer-brand" href="#inicio" onClick={(event) => { event.preventDefault(); onClose(); }} aria-label="Volver al inicio de Fundamenta">
-          <img src="/assets/fundamenta-logo-white.svg" alt="Fundamenta" />
+          <img src={assetPath('assets/fundamenta-logo-white.svg')} alt="Fundamenta" />
         </a>
         <p className="explorer-header-label">Modelado en Blender · Explora en 3D</p>
         <button ref={closeRef} className="explorer-close" onClick={onClose} aria-label="Cerrar explorador"><X size={22} /></button>
