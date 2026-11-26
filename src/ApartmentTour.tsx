@@ -6,13 +6,14 @@ import './apartment-tour.css';
 interface ApartmentTourProps {
   onBack: () => void;
   onClose: () => void;
+  backLabel?: string;
 }
 
 const TOUR_URL = 'https://my.matterport.com/show/?m=yb7QwQrptqv';
 
 type FrameStatus = 'loading' | 'loaded' | 'slow';
 
-export default function ApartmentTour({ onBack, onClose }: ApartmentTourProps) {
+export default function ApartmentTour({ onBack, onClose, backLabel = 'Volver al edificio' }: ApartmentTourProps) {
   const [frameKey, setFrameKey] = useState(0);
   const [status, setStatus] = useState<FrameStatus>('loading');
   const [helpOpen, setHelpOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function ApartmentTour({ onBack, onClose }: ApartmentTourProps) {
           <div><strong>Eco Egaña Norte</strong><span>Interior amoblado</span></div>
         </div>
         <div className="apartment-tour-actions">
-          <button ref={backRef} className="apartment-tour-back" onClick={onBack}><ArrowLeft size={17} />Volver al edificio</button>
+          <button ref={backRef} className="apartment-tour-back" onClick={onBack}><ArrowLeft size={17} />{backLabel}</button>
           <button className="apartment-tour-close" onClick={onClose} aria-label="Cerrar explorador"><X size={21} /></button>
         </div>
       </header>

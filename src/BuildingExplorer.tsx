@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { X, Sun, Moon, Minus, Plus, MapPin, Layers3, Rotate3D, DoorOpen, ExternalLink } from 'lucide-react';
 import BuildingScene from './BuildingScene';
-import ApartmentTour from './ApartmentTour';
+import ApartmentExperience from './ApartmentExperience';
 import { assetPath } from './asset-path';
 import './explorer.css';
 
@@ -9,13 +9,16 @@ type Mode = 'day' | 'dusk';
 interface BuildingExplorerProps {
   onClose: () => void;
   initialMode?: Mode;
+  initialApartment?: boolean;
 }
 
-export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: BuildingExplorerProps) {
+export default function BuildingExplorer({ onClose, initialMode = 'dusk', initialApartment = false }: BuildingExplorerProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [floor, setFloor] = useState(18);
   const [hoverFloor, setHoverFloor] = useState<number | null>(null);
-  const [apartmentOpen, setApartmentOpen] = useState(false);
+  const [apartmentOpen, setApartmentOpen] = useState(initialApartment);
+  const [entryRequest, setEntryRequest] = useState(0);
+  const [entering, setEntering] = useState(false);
   const apartmentOpenRef = useRef(false);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const exteriorScrollRef = useRef(0);
@@ -40,9 +43,16 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
       : dialog?.querySelector<HTMLElement>('.scene-canvas, [data-apartment-trigger]') ?? null;
     exteriorScrollRef.current = dialog?.scrollTop ?? 0;
     setHoverFloor(null);
+    setEntering(false);
     apartmentOpenRef.current = true;
     setApartmentOpen(true);
   }, []);
+
+  const requestApartment = useCallback(() => {
+    if (entering) return;
+    setEntering(true);
+    setEntryRequest(value => value + 1);
+  }, [entering]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -65,7 +75,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    closeRef.current?.focus();
+    if (!initialApartment) closeRef.current?.focus();
     const trapFocus = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -75,7 +85,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
       }
       if (event.key !== 'Tab' || !dialogRef.current) return;
       const elements = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), a[href], input:not([disabled]), iframe, [tabindex="0"]',
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), iframe, [tabindex="0"]',
       )).filter((element) => !element.closest('[hidden]') && element.getBoundingClientRect().width > 0);
       const first = elements[0];
       const last = elements[elements.length - 1];
@@ -93,7 +103,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
       document.removeEventListener('keydown', trapFocus);
       previousFocus?.focus({ preventScroll: true });
     };
-  }, [onClose, backToBuilding]);
+  }, [onClose, backToBuilding, initialApartment]);
 
   const changeFloor = useCallback((value: number) => {
     setHoverFloor(null);
@@ -111,6 +121,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
             onFloorSelect={changeFloor}
             onFloorHover={setHoverFloor}
             onApartmentSelect={openApartment}
+            entryRequest={entryRequest}
             active={!apartmentOpen}
           />
         </div>
@@ -138,13 +149,13 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
             <input id={floorId} type="range" min="3" max="26" value={floor} onChange={(event) => changeFloor(Number(event.target.value))} aria-valuetext={`Piso ${floor}`} />
             <button className="explorer-step" onClick={() => changeFloor(floor + 1)} disabled={floor === 26} aria-label="Subir un piso"><Plus size={17} /></button>
           </div>
-          <button className="explorer-cta" onClick={openApartment} data-apartment-trigger aria-label="Entrar al departamento piloto en 3D"><DoorOpen size={18} />Entrar al piloto en 3D</button>
+          <button className="explorer-cta" onClick={requestApartment} disabled={entering} data-apartment-trigger aria-label="Entrar al departamento en 3D"><DoorOpen size={18} />{entering ? 'Entrando a tu espacio…' : 'Entrar al departamento 3D'}</button>
           <figure className="explorer-pilot-preview">
             <img src={assetPath('assets/eco-egana-pilot.jpg')} alt="Interior amoblado del departamento piloto de Eco Egaña Norte" loading="lazy" />
             <figcaption><span>Piloto real · 2D y 2B</span><strong>Tu próxima perspectiva,<br />desde adentro.</strong></figcaption>
           </figure>
           <a className="explorer-quote" href="https://www.fundamenta.cl/cotizar-proyecto/?proyecto=eco-egana-norte" target="_blank" rel="noreferrer">Cotizar en Fundamenta<ExternalLink size={14} /></a>
-          <p id={descriptionId} className="explorer-note">Recorrido oficial del piloto de Eco Egaña. Ubicación en fachada referencial. El modelo exterior y los pisos son conceptuales.</p>
+          <p id={descriptionId} className="explorer-note">Interior editable basado en el plano oficial Tipo C. Acceso en fachada y pisos referenciales. También puedes visitar el piloto oficial.</p>
         </section>
         <div className="explorer-mode" role="group" aria-label="Iluminación del edificio">
           <button className={mode === 'day' ? 'explorer-mode-active' : ''} onClick={() => setMode('day')} aria-pressed={mode === 'day'}><Sun size={17} />Día</button>
@@ -152,7 +163,7 @@ export default function BuildingExplorer({ onClose, initialMode = 'dusk' }: Buil
         </div>
         <p className="explorer-render-note">Arquitectura reinterpretada en Blender</p>
       </div>
-      {apartmentOpen && <ApartmentTour onBack={backToBuilding} onClose={onClose} />}
+      {apartmentOpen && <ApartmentExperience onBack={backToBuilding} onClose={onClose} />}
     </div>
   );
 }

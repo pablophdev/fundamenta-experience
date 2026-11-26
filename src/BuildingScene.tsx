@@ -13,12 +13,14 @@ interface BuildingSceneProps {
   onFloorHover?: (floor: number | null) => void;
   onApartmentSelect?: () => void;
   active?: boolean;
+  entryRequest?: number;
 }
 interface SceneAPI {
   update: () => void;
   rotate: (direction: number) => void;
   zoom: (factor: number) => void;
   reset: () => void;
+  enter: () => void;
 }
 type Surface = THREE.MeshStandardMaterial;
 
@@ -31,6 +33,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
   const [state, setState] = useState<'loading' | 'ready' | 'fallback'>('loading');
   const [progress, setProgress] = useState(0);
   const [software, setSoftware] = useState(false);
+  const handledEntry = useRef(0);
 
   useEffect(() => {
     const host = containerRef.current;
@@ -104,6 +107,8 @@ export default function BuildingScene(props: BuildingSceneProps) {
       let frame = 0;
       let model: THREE.Group | null = null;
       let apartmentEntry: THREE.Mesh | null = null;
+      let entryFlight: { started: number; position: THREE.Vector3; target: THREE.Vector3; destination: THREE.Vector3; minDistance: number } | null = null;
+      let returnCamera: { position: THREE.Vector3; target: THREE.Vector3; minDistance: number } | null = null;
       let canDraw = true;
       let startX = 0, startY = 0;
       let down = false;
@@ -154,7 +159,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
       const pointerUp = (event: PointerEvent) => {
         if (down && activePointer === event.pointerId && Math.hypot(event.clientX - startX, event.clientY - startY) < 6) {
           const selected = pick(event);
-          if (selected.apartment) propsRef.current.onApartmentSelect?.();
+          if (selected.apartment) apiRef.current?.enter();
           else if (selected.floor !== null) propsRef.current.onFloorSelect(selected.floor);
         }
         pointers.delete(event.pointerId); activePointer = null; down = pointers.size > 0;
@@ -175,6 +180,14 @@ export default function BuildingScene(props: BuildingSceneProps) {
       renderer.domElement.addEventListener('webglcontextlost', contextLost);
       const update = () => {
         const { mode, selectedFloor, hoveredFloor } = propsRef.current;
+        if (propsRef.current.active === false && returnCamera) {
+          camera.position.copy(returnCamera.position);
+          controls.target.copy(returnCamera.target);
+          controls.minDistance = returnCamera.minDistance;
+          returnCamera = null;
+          controls.enabled = true;
+          controls.update();
+        }
         const isDay = mode === 'day';
         ambient.intensity = isDay ? 2.8 : 1.4;
         ambient.color.set(isDay ? 0xe8f3ff : 0x7999d5);
@@ -208,6 +221,20 @@ export default function BuildingScene(props: BuildingSceneProps) {
           camera.position.copy(controls.target).add(offset); controls.update(); invalidate();
         },
         reset() { camera.position.copy(initialCamera); controls.target.copy(initialTarget); controls.update(); invalidate(); },
+        enter() {
+          if (entryFlight) return;
+          if (!apartmentEntry || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            propsRef.current.onApartmentSelect?.();
+            return;
+          }
+          controls.enabled = false;
+          entryFlight = {
+            started: performance.now(), position: camera.position.clone(), target: controls.target.clone(),
+            destination: apartmentEntry.position.clone().add(new T.Vector3(0, .25, 7)), minDistance: controls.minDistance,
+          };
+          controls.minDistance = .1;
+          invalidate();
+        },
       };
       const visibility = () => { if (document.visibilityState === 'visible') invalidate(); };
       document.addEventListener('visibilitychange', visibility);
@@ -215,6 +242,19 @@ export default function BuildingScene(props: BuildingSceneProps) {
         if (disposed) return;
         frame = requestAnimationFrame(draw);
         if (propsRef.current.active === false) return;
+        let enterComplete = false;
+        if (entryFlight && apartmentEntry) {
+          const t = Math.min(1, (performance.now() - entryFlight.started) / 1050);
+          const eased = t * t * (3 - 2 * t);
+          camera.position.lerpVectors(entryFlight.position, entryFlight.destination, eased);
+          controls.target.lerpVectors(entryFlight.target, apartmentEntry.position, eased);
+          invalidate();
+          if (t === 1) {
+            returnCamera = { position: entryFlight.position, target: entryFlight.target, minDistance: entryFlight.minDistance };
+            entryFlight = null;
+            enterComplete = true;
+          }
+        }
         controls.update();
         if (apartmentEntry && apartmentButtonRef.current) {
           camera.updateMatrixWorld();
@@ -228,6 +268,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
           button.style.top = `${host.offsetTop + (1 - projected.y) * host.clientHeight / 2}px`;
         }
         if (canDraw && document.visibilityState !== 'hidden') { renderer.render(scene, camera); canDraw = false; }
+        if (enterComplete) propsRef.current.onApartmentSelect?.();
       };
       let cleaned = false;
       cleanup = () => {
@@ -253,7 +294,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         apiRef.current = null;
       };
       const gltf = await new GLTFLoader().loadAsync(assetPath('models/eco-egana.glb'), event => {
-        if (!disposed && event.total) setProgress(Math.round(event.loaded / event.total * 100));
+        if (!disposed && event.total) setProgress(Math.min(100, Math.round(event.loaded / event.total * 100)));
       });
       if (disposed) {
         gltf.scene.traverse(object => {
@@ -335,6 +376,14 @@ export default function BuildingScene(props: BuildingSceneProps) {
 
   useEffect(() => { apiRef.current?.update(); }, [props.mode, props.selectedFloor, props.hoveredFloor, props.active]);
 
+  useEffect(() => {
+    const request = props.entryRequest ?? 0;
+    if (!request || request === handledEntry.current || state === 'loading') return;
+    handledEntry.current = request;
+    if (state === 'ready') apiRef.current?.enter();
+    else propsRef.current.onApartmentSelect?.();
+  }, [props.entryRequest, state]);
+
   return <div className={`building-scene building-scene-${props.mode}`} data-state={state}>
     {state === 'fallback' ? <div className="scene-fallback"><img src={assetPath(`assets/eco-egana-${props.mode === 'day' ? 'day' : 'dusk'}.webp`)} alt="Render de referencia de Eco Egaña Norte" /><p>La vista 3D no está disponible en este dispositivo. Puedes seguir explorando con el selector de pisos.</p><a href={assetPath('models/eco-egana.glb')} download>Descargar modelo 3D (.glb)</a></div> : <>
       <div ref={containerRef} className="scene-canvas" role="group" tabIndex={0} aria-label="Edificio en 3D. Flechas izquierda y derecha para girar, arriba y abajo para cambiar piso, más y menos para zoom, cero para reiniciar." onKeyDown={event => {
@@ -346,7 +395,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         if (event.key === '0') { event.preventDefault(); apiRef.current.reset(); }
       }} />
       {state === 'loading' && <div className="scene-loading" role="status"><LoaderCircle className="scene-spinner" size={26} /><span>Construyendo tu perspectiva</span><small>{progress > 0 ? `${progress}%` : 'Cargando modelo de Blender'}</small></div>}
-      {state === 'ready' && <>{props.onApartmentSelect && <button ref={apartmentButtonRef} style={{ visibility: 'hidden' }} className="scene-apartment-entry" onClick={props.onApartmentSelect} aria-label="Entrar al departamento piloto en 3D desde la fachada"><DoorOpen size={17} /><span>Entrar al departamento<small>Piloto real · Interior amoblado</small></span></button>}<div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
+      {state === 'ready' && <>{props.onApartmentSelect && <button ref={apartmentButtonRef} style={{ visibility: 'hidden' }} className="scene-apartment-entry" onClick={() => apiRef.current?.enter()} aria-label="Entrar al departamento en 3D desde la fachada"><DoorOpen size={17} /><span>Entrar al departamento<small>Interior editable · 2D + 2B</small></span></button>}<div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
         <button onClick={() => apiRef.current?.rotate(-1)} aria-label="Girar a la izquierda"><ChevronLeft size={18} /></button><button onClick={() => apiRef.current?.rotate(1)} aria-label="Girar a la derecha"><ChevronRight size={18} /></button><span />
         <button onClick={() => apiRef.current?.zoom(.84)} aria-label="Acercar modelo"><ZoomIn size={18} /></button><button onClick={() => apiRef.current?.zoom(1.18)} aria-label="Alejar modelo"><ZoomOut size={18} /></button><span />
         <button onClick={() => apiRef.current?.reset()} aria-label="Reiniciar vista"><RotateCcw size={17} /></button>

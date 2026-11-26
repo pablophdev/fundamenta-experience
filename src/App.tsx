@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Plus, X, Menu, MapPin, Sun, Moon, ChevronDown, ChevronLeft, ChevronRight, MoveUpRight, Maximize2, Building2, TrainFront, Leaf, Check } from 'lucide-react';
 import BuildingExplorer from './BuildingExplorer';
 import { assetPath } from './asset-path';
+import { getVisitIdFromUrl } from './shared-visit';
 
 type SceneMode = 'day' | 'dusk';
 const ASSETS = assetPath('assets/');
@@ -56,7 +57,7 @@ function Gallery({ index, onClose }: { index: number; onClose: () => void }) {
 export default function App() {
   const [mode, setMode] = useState<SceneMode>('dusk');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [explorerOpen, setExplorerOpen] = useState(false);
+  const [explorerOpen, setExplorerOpen] = useState(() => Boolean(getVisitIdFromUrl()));
   const [space, setSpace] = useState(0);
   const [gallery, setGallery] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -108,7 +109,7 @@ export default function App() {
           <a className="button button-lime" href="#proyecto">Conoce el proyecto <Plus size={17} /></a>
         </div>
         <button className="building-hotspot" onClick={() => setExplorerOpen(true)} aria-label="Explorar el edificio Eco Egaña Norte">
-          <span className="hotspot-cross"><Plus size={21} /></span><span className="hotspot-label">EXPLORA EN 3D<span>Gira, acerca y descubre</span></span>
+          <span className="hotspot-cross"><Plus size={21} /></span><span className="hotspot-label">VIVE TU ESPACIO EN 3D<span>Entra, decora y recórrelo</span></span>
         </button>
         <div className="hero-bottom">
           <a className="scroll-cue" href="#proyecto"><span className="scroll-circle"><ChevronDown size={17} /></span><span>Hay mucho por descubrir</span></a>
@@ -151,7 +152,7 @@ export default function App() {
     </main>
     <footer className="site-footer section-wrap"><div className="footer-top"><a href="#inicio" aria-label="Volver al inicio"><img src={ASSETS + 'fundamenta-logo-white.svg'} width="185" height="42" alt="Fundamenta" /></a><span>Arquitectura para tu próxima historia.</span><a href="https://www.fundamenta.cl/proyectos/eco-egana-norte/" target="_blank" rel="noreferrer">Visita Fundamenta <MoveUpRight size={15} /></a></div><div className="footer-bottom"><span>Concepto digital independiente · React + Blender</span><p>Imágenes y marcas de Fundamenta. Renders referenciales. El modelo 3D y la exploración de pisos son conceptuales.</p><a href="#inicio">Volver arriba</a></div></footer>
     <a className="floating-visit" href={VISIT} target="_blank" rel="noreferrer">Agenda tu visita <Plus size={17} /></a>
-    {explorerOpen && <BuildingExplorer onClose={closeExplorer} initialMode={mode} />}
+    {explorerOpen && <BuildingExplorer onClose={closeExplorer} initialMode={mode} initialApartment={Boolean(getVisitIdFromUrl())} />}
     {gallery !== null && <Gallery index={gallery} onClose={closeGallery} />}
   </>;
 }

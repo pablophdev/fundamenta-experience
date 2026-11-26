@@ -6,4 +6,4 @@ class IntersectionObserverMock {
   disconnect() {}
 }
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
-Object.defineProperty(window, 'matchMedia', { value: vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })) });
+if (typeof window !== 'undefined') Object.defineProperty(window, 'matchMedia', { value: vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })) });

@@ -1,0 +1,1052 @@
+{
+  "version": 1,
+  "title": "Eco Egaña Norte · interpretación editable de planta C",
+  "plan": {
+    "type": "C",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "officialAreasM2": {
+      "usable": 56.02,
+      "terrace": 10.88,
+      "total": 66.9
+    },
+    "source": "https://www.fundamenta.cl/proyectos/eco-egana-norte/",
+    "image": "https://www.fundamenta.cl/content/uploads/2026/11/eco-egana-norte-planta-c.webp"
+  },
+  "model": "/models/eco-egana-interior.glb",
+  "units": "metres",
+  "up": "Y",
+  "front": "+Z",
+  "dimensionStatus": "All lengths, heights, furniture sizes and room boundaries are inferred from the official illustrative plan; only published areas are verified.",
+  "orientationStatus": "No verified cardinal orientation, floor or apartment number. Front +Z is a model convention.",
+  "bounds": {
+    "minX": -4.65,
+    "maxX": 4.65,
+    "minZ": -3.95,
+    "maxZ": 4.3,
+    "minY": -0.18,
+    "maxY": 2.65
+  },
+  "wallHeight": 2.65,
+  "floorY": 0,
+  "floorPolygons": [
+    [
+      {
+        "x": -4.5,
+        "z": -3
+      },
+      {
+        "x": 4.5,
+        "z": -3
+      },
+      {
+        "x": 4.5,
+        "z": 3
+      },
+      {
+        "x": -4.5,
+        "z": 3
+      }
+    ],
+    [
+      {
+        "x": -1.65,
+        "z": -3.7
+      },
+      {
+        "x": 2.4,
+        "z": -3.7
+      },
+      {
+        "x": 2.4,
+        "z": -3
+      },
+      {
+        "x": -1.65,
+        "z": -3
+      }
+    ],
+    [
+      {
+        "x": -4.5,
+        "z": 3
+      },
+      {
+        "x": 4.5,
+        "z": 3
+      },
+      {
+        "x": 4.5,
+        "z": 4.25
+      },
+      {
+        "x": -4.5,
+        "z": 4.25
+      }
+    ]
+  ],
+  "overviewCamera": [
+    10.6,
+    10.5,
+    12.2
+  ],
+  "overviewTarget": [
+    0,
+    0.4,
+    0.25
+  ],
+  "rooms": [
+    {
+      "id": "living",
+      "label": "Living",
+      "camera": [
+        0.42,
+        1.58,
+        2.6
+      ],
+      "target": [
+        -0.75,
+        1.0,
+        0.95
+      ],
+      "bounds": {
+        "minX": -1.5,
+        "maxX": 1.5,
+        "minZ": -0.55,
+        "maxZ": 3
+      }
+    },
+    {
+      "id": "kitchen",
+      "label": "Cocina y comedor",
+      "camera": [
+        0.97,
+        1.58,
+        -0.28
+      ],
+      "target": [
+        -0.75,
+        1.0,
+        -2.2
+      ],
+      "bounds": {
+        "minX": -1.5,
+        "maxX": 2.35,
+        "minZ": -3.7,
+        "maxZ": -0.55
+      }
+    },
+    {
+      "id": "bedroom_primary",
+      "label": "Dormitorio principal",
+      "camera": [
+        -1.92,
+        1.58,
+        2.58
+      ],
+      "target": [
+        -3.18,
+        0.85,
+        1.1
+      ],
+      "bounds": {
+        "minX": -4.45,
+        "maxX": -1.6,
+        "minZ": -0.6,
+        "maxZ": 3
+      }
+    },
+    {
+      "id": "bedroom_secondary",
+      "label": "Segundo dormitorio",
+      "camera": [
+        1.91,
+        1.58,
+        2.58
+      ],
+      "target": [
+        3.15,
+        0.85,
+        1.1
+      ],
+      "bounds": {
+        "minX": 1.6,
+        "maxX": 4.45,
+        "minZ": -0.6,
+        "maxZ": 3
+      }
+    },
+    {
+      "id": "bathroom_primary",
+      "label": "Baño principal",
+      "camera": [
+        -2.45,
+        1.58,
+        -0.9
+      ],
+      "target": [
+        -2.43,
+        1.0,
+        -2.45
+      ],
+      "bounds": {
+        "minX": -3.08,
+        "maxX": -1.6,
+        "minZ": -3,
+        "maxZ": -0.75
+      }
+    },
+    {
+      "id": "bathroom_secondary",
+      "label": "Segundo baño",
+      "camera": [
+        3.75,
+        1.58,
+        -0.9
+      ],
+      "target": [
+        3.8,
+        1.0,
+        -2.5
+      ],
+      "bounds": {
+        "minX": 3.2,
+        "maxX": 4.45,
+        "minZ": -3,
+        "maxZ": -0.75
+      }
+    },
+    {
+      "id": "terrace",
+      "label": "Terraza",
+      "camera": [
+        0.25,
+        1.58,
+        3.71
+      ],
+      "target": [
+        0.1,
+        1.0,
+        1.1
+      ],
+      "bounds": {
+        "minX": -4.45,
+        "maxX": 4.45,
+        "minZ": 3.08,
+        "maxZ": 4.2
+      }
+    }
+  ],
+  "walls": [
+    {
+      "id": "external_left",
+      "objectName": "Wall_external_left",
+      "x": -4.55,
+      "z": 0,
+      "width": 0.15,
+      "depth": 6.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "external_right",
+      "objectName": "Wall_external_right",
+      "x": 4.55,
+      "z": 0,
+      "width": 0.15,
+      "depth": 6.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "rear_left",
+      "objectName": "Wall_rear_left",
+      "x": -3.125,
+      "z": -3.075,
+      "width": 2.85,
+      "depth": 0.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "rear_right",
+      "objectName": "Wall_rear_right",
+      "x": 3.55,
+      "z": -3.075,
+      "width": 2.1,
+      "depth": 0.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "entry_left_return",
+      "objectName": "Wall_entry_left_return",
+      "x": -1.725,
+      "z": -3.4,
+      "width": 0.15,
+      "depth": 0.8,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "entry_right_return",
+      "objectName": "Wall_entry_right_return",
+      "x": 2.475,
+      "z": -3.4,
+      "width": 0.15,
+      "depth": 0.8,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "entry_rear_left",
+      "objectName": "Wall_entry_rear_left",
+      "x": -0.35,
+      "z": -3.775,
+      "width": 2.65,
+      "depth": 0.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "entry_rear_right",
+      "objectName": "Wall_entry_rear_right",
+      "x": 2.05,
+      "z": -3.775,
+      "width": 0.7,
+      "depth": 0.15,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "entry_door_header",
+      "objectName": "Wall_entry_door_header",
+      "x": 1.2,
+      "z": -3.775,
+      "width": 1.0,
+      "depth": 0.15,
+      "height": 0.45,
+      "base": 2.2,
+      "rotation": 0,
+      "category": "header"
+    },
+    {
+      "id": "bedroom_primary_divider",
+      "objectName": "Wall_bedroom_primary_divider",
+      "x": -1.55,
+      "z": 1.07,
+      "width": 0.1,
+      "depth": 2.66,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bedroom_secondary_divider",
+      "objectName": "Wall_bedroom_secondary_divider",
+      "x": 1.55,
+      "z": 1.07,
+      "width": 0.1,
+      "depth": 2.66,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "primary_divider_header",
+      "objectName": "Wall_primary_divider_header",
+      "x": -1.55,
+      "z": 2.67,
+      "width": 0.1,
+      "depth": 0.55,
+      "height": 0.5,
+      "base": 2.15,
+      "rotation": 0,
+      "category": "header"
+    },
+    {
+      "id": "secondary_divider_header",
+      "objectName": "Wall_secondary_divider_header",
+      "x": 1.55,
+      "z": 2.67,
+      "width": 0.1,
+      "depth": 0.55,
+      "height": 0.5,
+      "base": 2.15,
+      "rotation": 0,
+      "category": "header"
+    },
+    {
+      "id": "bath_primary_side",
+      "objectName": "Wall_bath_primary_side",
+      "x": -3.14,
+      "z": -1.85,
+      "width": 0.1,
+      "depth": 2.3,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_primary_front_left",
+      "objectName": "Wall_bath_primary_front_left",
+      "x": -2.94,
+      "z": -0.7,
+      "width": 0.45,
+      "depth": 0.1,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_primary_front_right",
+      "objectName": "Wall_bath_primary_front_right",
+      "x": -1.71,
+      "z": -0.7,
+      "width": 0.35,
+      "depth": 0.1,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_primary_door_header",
+      "objectName": "Wall_bath_primary_door_header",
+      "x": -2.32,
+      "z": -0.7,
+      "width": 0.85,
+      "depth": 0.1,
+      "height": 0.5,
+      "base": 2.15,
+      "rotation": 0,
+      "category": "header"
+    },
+    {
+      "id": "bath_secondary_side",
+      "objectName": "Wall_bath_secondary_side",
+      "x": 3.14,
+      "z": -1.85,
+      "width": 0.1,
+      "depth": 2.3,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_secondary_front_left",
+      "objectName": "Wall_bath_secondary_front_left",
+      "x": 3.32,
+      "z": -0.7,
+      "width": 0.36,
+      "depth": 0.1,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_secondary_front_right",
+      "objectName": "Wall_bath_secondary_front_right",
+      "x": 4.38,
+      "z": -0.7,
+      "width": 0.34,
+      "depth": 0.1,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "bath_secondary_door_header",
+      "objectName": "Wall_bath_secondary_door_header",
+      "x": 3.85,
+      "z": -0.7,
+      "width": 0.78,
+      "depth": 0.1,
+      "height": 0.5,
+      "base": 2.15,
+      "rotation": 0,
+      "category": "header"
+    },
+    {
+      "id": "kitchen_left_back",
+      "objectName": "Wall_kitchen_left_back",
+      "x": -1.55,
+      "z": -1.85,
+      "width": 0.1,
+      "depth": 2.3,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "kitchen_right_service_back",
+      "objectName": "Wall_kitchen_right_service_back",
+      "x": 2.43,
+      "z": -2.75,
+      "width": 0.1,
+      "depth": 1.75,
+      "height": 2.65,
+      "base": 0,
+      "rotation": 0,
+      "category": "partition"
+    },
+    {
+      "id": "terrace_left",
+      "objectName": "Wall_terrace_left",
+      "x": -4.55,
+      "z": 3.65,
+      "width": 0.15,
+      "depth": 1.3,
+      "height": 1.15,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    },
+    {
+      "id": "terrace_right",
+      "objectName": "Wall_terrace_right",
+      "x": 4.55,
+      "z": 3.65,
+      "width": 0.15,
+      "depth": 1.3,
+      "height": 1.15,
+      "base": 0,
+      "rotation": 0,
+      "category": "external"
+    }
+  ],
+  "furniture": [
+    {
+      "id": "sofa",
+      "label": "Sofá de tres cuerpos",
+      "kind": "sofa",
+      "room": "living",
+      "objectName": "Furniture_sofa",
+      "position": [
+        -1.0,
+        0,
+        1.18
+      ],
+      "dimensions": [
+        2.05,
+        0.82,
+        0.84
+      ],
+      "rotationY": 1.5707963267948966,
+      "color": "#8c9997",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "coffee_table",
+      "label": "Mesa de centro",
+      "kind": "coffee_table",
+      "room": "living",
+      "objectName": "Furniture_coffee_table",
+      "position": [
+        0.15,
+        0,
+        1.55
+      ],
+      "dimensions": [
+        0.65,
+        0.42,
+        1.08
+      ],
+      "rotationY": 0.0,
+      "color": "#b7ced0",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "armchair",
+      "label": "Sillón de lectura",
+      "kind": "chair",
+      "room": "living",
+      "objectName": "Furniture_armchair",
+      "position": [
+        0.92,
+        0,
+        0.35
+      ],
+      "dimensions": [
+        0.72,
+        0.86,
+        0.8
+      ],
+      "rotationY": -0.6981317007977318,
+      "color": "#d6cdbb",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "dining_table",
+      "label": "Mesa de comedor",
+      "kind": "dining_table",
+      "room": "kitchen",
+      "objectName": "Furniture_dining_table",
+      "position": [
+        0.05,
+        0,
+        -1.65
+      ],
+      "dimensions": [
+        0.82,
+        0.76,
+        1.45
+      ],
+      "rotationY": 0.0,
+      "color": "#e3dfd2",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "dining_chair_1",
+      "label": "Silla de comedor 1",
+      "kind": "dining_chair",
+      "room": "kitchen",
+      "objectName": "Furniture_dining_chair_1",
+      "position": [
+        -0.61,
+        0,
+        -1.95
+      ],
+      "dimensions": [
+        0.4,
+        0.84,
+        0.43
+      ],
+      "rotationY": 1.5707963267948966,
+      "color": "#7e8d80",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "dining_chair_2",
+      "label": "Silla de comedor 2",
+      "kind": "dining_chair",
+      "room": "kitchen",
+      "objectName": "Furniture_dining_chair_2",
+      "position": [
+        -0.61,
+        0,
+        -1.23
+      ],
+      "dimensions": [
+        0.4,
+        0.84,
+        0.43
+      ],
+      "rotationY": 1.5707963267948966,
+      "color": "#7e8d80",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "dining_chair_3",
+      "label": "Silla de comedor 3",
+      "kind": "dining_chair",
+      "room": "kitchen",
+      "objectName": "Furniture_dining_chair_3",
+      "position": [
+        0.72,
+        0,
+        -1.95
+      ],
+      "dimensions": [
+        0.4,
+        0.84,
+        0.43
+      ],
+      "rotationY": -1.5707963267948966,
+      "color": "#7e8d80",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "dining_chair_4",
+      "label": "Silla de comedor 4",
+      "kind": "dining_chair",
+      "room": "kitchen",
+      "objectName": "Furniture_dining_chair_4",
+      "position": [
+        0.72,
+        0,
+        -1.23
+      ],
+      "dimensions": [
+        0.4,
+        0.84,
+        0.43
+      ],
+      "rotationY": -1.5707963267948966,
+      "color": "#7e8d80",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "bed_primary",
+      "label": "Cama dormitorio principal",
+      "kind": "bed",
+      "room": "bedroom_primary",
+      "objectName": "Furniture_bed_primary",
+      "position": [
+        -3.14,
+        0,
+        1.18
+      ],
+      "dimensions": [
+        1.6,
+        0.95,
+        2.08
+      ],
+      "rotationY": 1.5707963267948966,
+      "color": "#9da98c",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "bed_secondary",
+      "label": "Cama dormitorio secundario",
+      "kind": "bed",
+      "room": "bedroom_secondary",
+      "objectName": "Furniture_bed_secondary",
+      "position": [
+        3.13,
+        0,
+        1.18
+      ],
+      "dimensions": [
+        1.5,
+        0.95,
+        2.08
+      ],
+      "rotationY": -1.5707963267948966,
+      "color": "#b6a793",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "nightstand_primary_1",
+      "label": "Velador y lámpara 1",
+      "kind": "nightstand",
+      "room": "bedroom_primary",
+      "objectName": "Furniture_nightstand_primary_1",
+      "position": [
+        -4.03,
+        0,
+        -0.08
+      ],
+      "dimensions": [
+        0.5,
+        0.94,
+        0.48
+      ],
+      "rotationY": 0.0,
+      "color": "#ac7c4d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "nightstand_primary_2",
+      "label": "Velador y lámpara 2",
+      "kind": "nightstand",
+      "room": "bedroom_primary",
+      "objectName": "Furniture_nightstand_primary_2",
+      "position": [
+        -4.03,
+        0,
+        2.42
+      ],
+      "dimensions": [
+        0.5,
+        0.94,
+        0.48
+      ],
+      "rotationY": 0.0,
+      "color": "#ac7c4d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "nightstand_secondary_1",
+      "label": "Velador y lámpara 1",
+      "kind": "nightstand",
+      "room": "bedroom_secondary",
+      "objectName": "Furniture_nightstand_secondary_1",
+      "position": [
+        4.03,
+        0,
+        -0.08
+      ],
+      "dimensions": [
+        0.5,
+        0.94,
+        0.48
+      ],
+      "rotationY": 0.0,
+      "color": "#ac7c4d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "nightstand_secondary_2",
+      "label": "Velador y lámpara 2",
+      "kind": "nightstand",
+      "room": "bedroom_secondary",
+      "objectName": "Furniture_nightstand_secondary_2",
+      "position": [
+        4.03,
+        0,
+        2.42
+      ],
+      "dimensions": [
+        0.5,
+        0.94,
+        0.48
+      ],
+      "rotationY": 0.0,
+      "color": "#ac7c4d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "terrace_chair_1",
+      "label": "Sillón terraza izquierdo",
+      "kind": "terrace_chair",
+      "room": "terrace",
+      "objectName": "Furniture_terrace_chair_1",
+      "position": [
+        -3.35,
+        0,
+        3.62
+      ],
+      "dimensions": [
+        0.65,
+        0.83,
+        0.65
+      ],
+      "rotationY": -0.4363323129985824,
+      "color": "#dddcd1",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "terrace_chair_2",
+      "label": "Sillón terraza derecho",
+      "kind": "terrace_chair",
+      "room": "terrace",
+      "objectName": "Furniture_terrace_chair_2",
+      "position": [
+        3.22,
+        0,
+        3.62
+      ],
+      "dimensions": [
+        0.65,
+        0.83,
+        0.65
+      ],
+      "rotationY": 0.4363323129985824,
+      "color": "#dddcd1",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "terrace_table",
+      "label": "Mesa de terraza",
+      "kind": "round_table",
+      "room": "terrace",
+      "objectName": "Furniture_terrace_table",
+      "position": [
+        2.24,
+        0,
+        3.62
+      ],
+      "dimensions": [
+        0.48,
+        0.52,
+        0.48
+      ],
+      "rotationY": 0.0,
+      "color": "#d1dcce",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "plant_1",
+      "label": "Planta terraza",
+      "kind": "plant",
+      "room": "terrace",
+      "objectName": "Furniture_plant_1",
+      "position": [
+        -4.08,
+        0,
+        3.66
+      ],
+      "dimensions": [
+        0.55,
+        1.2,
+        0.55
+      ],
+      "rotationY": 0.0,
+      "color": "#5f813d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    },
+    {
+      "id": "plant_2",
+      "label": "Planta de interior",
+      "kind": "plant",
+      "room": "living",
+      "objectName": "Furniture_plant_2",
+      "position": [
+        1.13,
+        0,
+        2.54
+      ],
+      "dimensions": [
+        0.43,
+        1.05,
+        0.43
+      ],
+      "rotationY": 0.0,
+      "color": "#5f813d",
+      "editable": true,
+      "dimensionStatus": "inferred"
+    }
+  ],
+  "obstacles": [
+    {
+      "id": "kitchen_cabinet_left",
+      "x": -1.16,
+      "z": -1.85,
+      "width": 0.62,
+      "depth": 2.15,
+      "rotation": 0
+    },
+    {
+      "id": "kitchen_cabinet_rear",
+      "x": -0.65,
+      "z": -3.38,
+      "width": 1.95,
+      "depth": 0.63,
+      "rotation": 0
+    },
+    {
+      "id": "refrigerator",
+      "x": 1.9,
+      "z": -2.75,
+      "width": 0.67,
+      "depth": 0.64,
+      "rotation": 0
+    },
+    {
+      "id": "washing_machine",
+      "x": 1.8,
+      "z": -3.33,
+      "width": 0.61,
+      "depth": 0.61,
+      "rotation": 0
+    },
+    {
+      "id": "wardrobe_primary",
+      "x": -4.13,
+      "z": -1.82,
+      "width": 0.56,
+      "depth": 1.65,
+      "rotation": 0
+    },
+    {
+      "id": "wardrobe_secondary",
+      "x": 2.52,
+      "z": -1.25,
+      "width": 0.92,
+      "depth": 0.54,
+      "rotation": 0
+    },
+    {
+      "id": "tub_primary",
+      "x": -2.34,
+      "z": -2.57,
+      "width": 1.36,
+      "depth": 0.76,
+      "rotation": 0
+    },
+    {
+      "id": "tub_secondary",
+      "x": 3.825,
+      "z": -2.57,
+      "width": 1.13,
+      "depth": 0.76,
+      "rotation": 0
+    },
+    {
+      "id": "toilet_primary",
+      "x": -1.92,
+      "z": -1.65,
+      "width": 0.48,
+      "depth": 0.74,
+      "rotation": 0
+    },
+    {
+      "id": "toilet_secondary",
+      "x": 4.13,
+      "z": -1.65,
+      "width": 0.48,
+      "depth": 0.74,
+      "rotation": 0
+    },
+    {
+      "id": "vanity_primary",
+      "x": -1.92,
+      "z": -1,
+      "width": 0.49,
+      "depth": 0.44,
+      "rotation": 0
+    },
+    {
+      "id": "vanity_secondary",
+      "x": 4.13,
+      "z": -1,
+      "width": 0.49,
+      "depth": 0.44,
+      "rotation": 0
+    }
+  ],
+  "renderGroups": {
+    "shell": "Architecture",
+    "fixed": "Fixed_Fittings",
+    "furniture": "Furniture",
+    "decor": "Decoration"
+  },
+  "notes": [
+    "Editable scene is a visual interpretation of plan C, not a measured scan or a verified unit.",
+    "The separate official Matterport pilot is not proven to correspond to plan C.",
+    "Furniture is original procedural geometry inspired by the illustrated layout, not an exact inventory."
+  ]
+}

@@ -1,87 +1,73 @@
 # Fundamenta Experience
 
-Frontend en React, TypeScript y Vite que presenta Eco Egaña Norte con una experiencia arquitectónica interactiva. Combina los logos y renders oficiales de Fundamenta con un modelo 3D creado en Blender y mostrado en el navegador con Three.js.
+Experiencia de Eco Egaña Norte construida con React, TypeScript, Three.js y modelos editables en Blender.
 
-El visor permite orbitar alrededor del edificio, acercar y alejar la cámara, seleccionar pisos y alternar entre iluminación de día y atardecer.
+**Web:** https://pablophdev.github.io/fundamenta-experience/
 
-Desde el piloto destacado en el exterior o el botón **Entrar al departamento piloto en 3D** se abre el recorrido interior amoblado oficial de Eco Egaña Norte. La vista interior permite recorrer el piloto con Matterport; **Volver al edificio** recupera la selección del exterior. Con el foco en los controles del explorador, la tecla Escape vuelve primero al edificio y, desde el exterior, cierra el explorador.
+Desde el edificio se puede tocar el departamento destacado: la cámara se acerca a su terraza y abre un interior amoblado editable. Al volver se conserva el piso y la cámara exterior.
 
-Cuando WebGL no está disponible, el visor utiliza una vista 3D simplificada con SVGRenderer: conserva la geometría y los controles de cámara, con materiales, texturas y sombras simplificados. Si tampoco puede cargar esa vista, muestra el render de referencia y permite descargar el modelo GLB.
+- Interior 2D + 2B basado en el plano oficial Tipo C, con vistas de living, cocina, dormitorios y terraza.
+- Tres estilos de decoración, muebles seleccionables y controles para moverlos, girarlos y ajustar sus dimensiones en metros.
+- Comprobación geométrica de superposiciones y separación entre muebles y muros. Es una ayuda de distribución; no certifica accesibilidad ni cumplimiento normativo.
+- Simulación solar por fecha, hora local de Santiago y norte ajustable. La posición astronómica usa la ubicación del proyecto; la orientación del departamento es referencial y puede ajustarse.
+- **Mi día aquí:** recorrido guiado desde la mañana hasta la noche por el interior personalizado. Se puede detener en cualquier momento y respeta la preferencia de movimiento reducido.
+- **Visita compartida:** un enlace permite entrar desde otro dispositivo y sincronizar habitación, decoración, hora y posición de los muebles. La interfaz muestra el estado real de conexión.
+- Acceso al recorrido amoblado oficial de Matterport como referencia independiente del modelo editable.
 
-## Desarrollo local
+## Desarrollo
 
-Requisitos: Node.js 22 y npm.
+Node.js 22 o superior:
 
 ```sh
 npm ci
 npm run dev
-```
-
-Abre `http://localhost:3000`. Para generar la versión de producción:
-
-```sh
-npm run build
-npm run preview
-```
-
-```sh
 npm test
+npm run build
 ```
 
-Las pruebas de interacción cubren iluminación, espacios, galería, explorador, entrada y regreso del recorrido interior, teclado y foco, además de los estados de carga y reintento del visor. Comprueban la integración del iframe; la navegación dentro de Matterport requiere revisión en navegador con acceso al servicio. GitHub Actions ejecuta el build en los pushes a `main` y en las pull requests.
+La aplicación local se abre en `http://localhost:3000/`. La compilación se genera en `dist/`. Los modelos e imágenes se sirven con el frontend; Blender solo es necesario para editar o regenerar las escenas.
 
-El resultado se genera en `dist/`. No se necesitan claves ni variables de entorno para usar el frontend.
-
-## Modelo 3D con Blender
-
-El modelo arquitectónico es conceptual y está basado en los renders oficiales de Eco Egaña Norte. Sus proporciones, detalles y pisos sirven para la experiencia interactiva; no constituyen un modelo BIM ni una reproducción de planos de obra.
-
-Con Blender instalado y disponible como `blender` en la terminal, ejecuta este comando desde la raíz del proyecto para regenerar los archivos:
-
-```sh
-blender -b -t 2 -P blender/build_eco_egana.py
-```
+## Modelos de Blender
 
 | Archivo | Uso |
 | --- | --- |
-| [`blender/build_eco_egana.py`](blender/build_eco_egana.py) | Script reproducible de construcción, exportación y vista previa |
-| [`blender/eco-egana.blend`](blender/eco-egana.blend) | Escena editable en Blender |
-| [`public/models/eco-egana.glb`](public/models/eco-egana.glb) | Modelo glTF binario que carga el visor Three.js |
-| [`blender/preview.png`](blender/preview.png) | Vista previa del modelo generada en Blender |
+| `blender/build_eco_egana.py` | Generador reproducible del exterior |
+| `blender/eco-egana.blend` | Exterior editable |
+| `public/models/eco-egana.glb` | Exterior para el navegador |
+| `blender/build_eco_egana_interior.py` | Generador del interior |
+| `blender/eco-egana-interior.blend` | Interior amoblado editable |
+| `public/models/eco-egana-interior.glb` | Interior para el navegador |
+| `public/models/eco-egana-interior.json` | Coordenadas, muebles, cámaras y fuentes del interior |
 
-Blender solo se necesita para editar o regenerar el modelo. Para ejecutar el frontend basta con los recursos exportados incluidos en el repositorio y los comandos de npm anteriores. Tras cambiar el GLB, vuelve a generar `dist/` con `npm run build`.
+El exterior es una reinterpretación conceptual de los renders oficiales. El interior utiliza como referencia el **plano Tipo C: 56,02 m² útiles y 10,88 m² de terraza, 66,9 m² totales**. Las superficies están publicadas por Fundamenta; las longitudes de la reconstrucción se estiman a partir del plano. La decoración es sugerida y no forma parte de una oferta de venta.
 
-## Recorrido interior del piloto
+El acceso en la fachada y los pisos son referenciales. Este modelo no identifica una unidad real disponible, no es un modelo BIM ni un levantamiento de obra. Tampoco reproduce el escaneo del piloto oficial. La orientación ajustable y el entorno simplificado limitan la precisión de las sombras; no debe usarse como estudio de asoleamiento de una unidad verificada.
 
-El interior utiliza el [tour oficial de Eco Egaña Norte en Matterport](https://my.matterport.com/show/?m=yb7QwQrptqv), enlazado en la sección **Recorre Eco Egaña Norte en 360°** de la [ficha oficial del proyecto](https://www.fundamenta.cl/proyectos/eco-egana-norte/). Es un piloto amoblado de 2 dormitorios y 2 baños.
+Sin WebGL, ambos modelos ofrecen una representación geométrica simplificada con SVGRenderer. Se conservan las interacciones, con materiales e iluminación simplificados. El tour externo de Matterport requiere su propio navegador compatible con WebGL.
 
-La posición del acceso en la fachada es referencial. El tour no corresponde a una unidad verificada en el piso elegido, ni demuestra disponibilidad de venta para ese piso. La selección de pisos pertenece al modelo exterior conceptual y se conserva al volver del recorrido.
+## Visita compartida
 
-Matterport es un servicio externo que necesita conexión a internet y un navegador compatible con su visor WebGL. El modo SVG simplificado del exterior no sustituye esos requisitos del interior. La pantalla ofrece instrucciones, reintento y un enlace para abrir el recorrido en otra pestaña si el visor no carga dentro de la página.
+El frontend usa un servicio aislado en Neon para salas temporales. No necesita cuentas de visitantes ni recoge nombres, correos o datos de contacto. El enlace de invitación permite acceder a la distribución compartida: compártelo únicamente con quienes quieras invitar. Los cambios guardados en el dispositivo permiten retomar la decoración local.
 
-## Alcance y fuentes
+El código del servicio y las instrucciones de configuración se incluyen en `backend/`. Las credenciales de base de datos permanecen en el servicio; no se incorporan al bundle del navegador ni al repositorio.
 
-Esta es una propuesta conceptual de frontend. No representa una plataforma oficial de venta ni un cotizador conectado al inventario de Fundamenta. La exploración de pisos es ilustrativa: no informa disponibilidad, precios, orientación ni unidades a la venta. Para cotizaciones y condiciones vigentes se debe consultar el sitio oficial.
+## Fuentes
 
-- [Eco Egaña Norte — Fundamenta](https://www.fundamenta.cl/proyectos/eco-egana-norte/): Av. Irarrázaval 5651, Ñuñoa; conexión con Metro Plaza Egaña; departamentos de 1 y 2 dormitorios, desde 32 m².
+- [Ficha oficial de Eco Egaña Norte](https://www.fundamenta.cl/proyectos/eco-egana-norte/): Av. Irarrázaval 5651, Ñuñoa; Metro Plaza Egaña L3/L4; 1 y 2 dormitorios, superficies desde 32 m².
+- [Plano oficial Tipo C](https://www.fundamenta.cl/content/uploads/2026/11/eco-egana-norte-planta-c.webp).
+- [Brochure oficial](https://www.fundamenta.cl/content/uploads/2026/11/brochure-eco-egana-norte.pdf).
+- [Piloto amoblado oficial en Matterport](https://my.matterport.com/show/?m=yb7QwQrptqv), enlazado desde la ficha del proyecto. No se verificó su correspondencia con el Tipo C ni con un piso o número de unidad.
 - [Cotización oficial](https://www.fundamenta.cl/cotizar-proyecto/?proyecto=eco-egana-norte).
-- [Agenda de visitas oficial](https://www.fundamenta.cl/agenda-tu-visita/?proyecto=eco-egana-norte).
-- [Interior 3D amoblado del piloto — Matterport](https://my.matterport.com/show/?m=yb7QwQrptqv), publicado desde la ficha oficial de Eco Egaña Norte.
-- [`public/assets/sources.json`](public/assets/sources.json) registra las URLs de origen de los recursos visuales descargados del sitio de Fundamenta. Las marcas e imágenes pertenecen a sus respectivos titulares; no se concede una licencia adicional sobre esos recursos.
+- `public/assets/sources.json` y el manifiesto del interior documentan la procedencia de los recursos.
 
-Los datos del proyecto se verificaron el 25 de noviembre de 2026 y pueden cambiar. El frontend no recoge datos personales ni envía formularios a un backend propio.
+Propuesta digital independiente. Las marcas e imágenes pertenecen a Fundamenta y sus respectivos titulares. No hay conexión al inventario ni al cotizador de Fundamenta. Datos consultados en noviembre de 2026; confirma las condiciones vigentes en el sitio oficial.
 
-## GitHub Pages
+## Publicación en GitHub Pages
 
-La rama `gh-pages` contiene la web compilada, incluyendo imágenes y el modelo GLB.
-No requiere un workflow de despliegue propio. Configuración del repositorio:
-**Settings → Pages → Source: Deploy from a branch → Branch: gh-pages → /(root) → Save**.
-
-Para construir futuras versiones con la ruta de Pages:
+La rama `gh-pages` contiene los archivos compilados y `.nojekyll`. La configuración usa **Deploy from a branch → gh-pages → /(root)**; no hay un workflow de despliegue propio.
 
 ```sh
 GITHUB_PAGES=true npm run build
 ```
 
-El contenido de `dist/` se publica en la raíz de `gh-pages`, incluyendo un archivo
-`.nojekyll`. El desarrollo local conserva la ruta raíz `/`.
+Publica el contenido de `dist/` en la raíz de `gh-pages`. El desarrollo local conserva la ruta `/`. El workflow de CI de `main` ejecuta las pruebas y la compilación.
