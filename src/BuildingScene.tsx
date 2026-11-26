@@ -223,6 +223,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
           const visible = fromFront && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < .92 && Math.abs(projected.y) < .94;
           const button = apartmentButtonRef.current;
           button.hidden = !visible;
+          button.style.visibility = visible ? 'visible' : 'hidden';
           button.style.left = `${host.offsetLeft + (projected.x + 1) * host.clientWidth / 2}px`;
           button.style.top = `${host.offsetTop + (1 - projected.y) * host.clientHeight / 2}px`;
         }
@@ -345,7 +346,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         if (event.key === '0') { event.preventDefault(); apiRef.current.reset(); }
       }} />
       {state === 'loading' && <div className="scene-loading" role="status"><LoaderCircle className="scene-spinner" size={26} /><span>Construyendo tu perspectiva</span><small>{progress > 0 ? `${progress}%` : 'Cargando modelo de Blender'}</small></div>}
-      {state === 'ready' && <>{props.onApartmentSelect && <button ref={apartmentButtonRef} className="scene-apartment-entry" onClick={props.onApartmentSelect} aria-label="Entrar al departamento piloto en 3D desde la fachada"><DoorOpen size={17} /><span>Entrar al departamento<small>Piloto real · Interior amoblado</small></span></button>}<div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
+      {state === 'ready' && <>{props.onApartmentSelect && <button ref={apartmentButtonRef} style={{ visibility: 'hidden' }} className="scene-apartment-entry" onClick={props.onApartmentSelect} aria-label="Entrar al departamento piloto en 3D desde la fachada"><DoorOpen size={17} /><span>Entrar al departamento<small>Piloto real · Interior amoblado</small></span></button>}<div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
         <button onClick={() => apiRef.current?.rotate(-1)} aria-label="Girar a la izquierda"><ChevronLeft size={18} /></button><button onClick={() => apiRef.current?.rotate(1)} aria-label="Girar a la derecha"><ChevronRight size={18} /></button><span />
         <button onClick={() => apiRef.current?.zoom(.84)} aria-label="Acercar modelo"><ZoomIn size={18} /></button><button onClick={() => apiRef.current?.zoom(1.18)} aria-label="Alejar modelo"><ZoomOut size={18} /></button><span />
         <button onClick={() => apiRef.current?.reset()} aria-label="Reiniciar vista"><RotateCcw size={17} /></button>
