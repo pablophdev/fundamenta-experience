@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type * as THREE from 'three';
 import type { SVGRenderer as SVGRendererType } from 'three/addons/renderers/SVGRenderer.js';
-import { LoaderCircle, RotateCcw, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Box } from 'lucide-react';
+import { LoaderCircle, RotateCcw, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, Box, DoorOpen } from 'lucide-react';
 import { assetPath } from './asset-path';
 import './scene.css';
 
@@ -11,6 +11,8 @@ interface BuildingSceneProps {
   hoveredFloor?: number | null;
   onFloorSelect: (floor: number) => void;
   onFloorHover?: (floor: number | null) => void;
+  onApartmentSelect?: () => void;
+  active?: boolean;
 }
 interface SceneAPI {
   update: () => void;
@@ -22,6 +24,7 @@ type Surface = THREE.MeshStandardMaterial;
 
 export default function BuildingScene(props: BuildingSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const apartmentButtonRef = useRef<HTMLButtonElement>(null);
   const propsRef = useRef(props);
   propsRef.current = props;
   const apiRef = useRef<SceneAPI | null>(null);
@@ -100,9 +103,12 @@ export default function BuildingScene(props: BuildingSceneProps) {
       const floorMaterials = new Map<number, Surface[]>();
       let frame = 0;
       let model: THREE.Group | null = null;
+      let apartmentEntry: THREE.Mesh | null = null;
       let canDraw = true;
       let startX = 0, startY = 0;
       let down = false;
+      let activePointer: number | null = null;
+      const pointers = new Set<number>();
       let sceneScale = 90;
       const initialCamera = new T.Vector3();
       const initialTarget = new T.Vector3();
@@ -111,7 +117,8 @@ export default function BuildingScene(props: BuildingSceneProps) {
       const invalidate = () => { canDraw = true; };
       controls.addEventListener('change', invalidate);
       const size = () => {
-        const width = Math.max(host.clientWidth, 1), height = Math.max(host.clientHeight, 1);
+        const width = host.clientWidth, height = host.clientHeight;
+        if (!width || !height) return;
         renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
@@ -131,29 +138,40 @@ export default function BuildingScene(props: BuildingSceneProps) {
         const rect = renderer.domElement.getBoundingClientRect();
         pointer.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
         raycaster.setFromCamera(pointer, camera);
-        const intersection = model ? raycaster.intersectObject(model, true)[0] : undefined;
-        return intersection ? surfaceFloor(intersection.object) : null;
+        const targets = model ? (apartmentEntry ? [model, apartmentEntry] : [model]) : [];
+        const intersection = raycaster.intersectObjects(targets, true)[0];
+        return {
+          floor: intersection ? surfaceFloor(intersection.object) : null,
+          apartment: Boolean(intersection && (intersection.object === apartmentEntry || intersection.object.parent === apartmentEntry)),
+        };
       };
-      const pointerDown = (event: PointerEvent) => { down = true; startX = event.clientX; startY = event.clientY; propsRef.current.onFloorHover?.(null); };
+      const pointerDown = (event: PointerEvent) => {
+        pointers.add(event.pointerId);
+        activePointer = pointers.size === 1 ? event.pointerId : null;
+        down = true; startX = event.clientX; startY = event.clientY;
+        propsRef.current.onFloorHover?.(null);
+      };
       const pointerUp = (event: PointerEvent) => {
-        if (down && Math.hypot(event.clientX - startX, event.clientY - startY) < 6) {
+        if (down && activePointer === event.pointerId && Math.hypot(event.clientX - startX, event.clientY - startY) < 6) {
           const selected = pick(event);
-          if (selected !== null) propsRef.current.onFloorSelect(selected);
+          if (selected.apartment) propsRef.current.onApartmentSelect?.();
+          else if (selected.floor !== null) propsRef.current.onFloorSelect(selected.floor);
         }
-        down = false;
+        pointers.delete(event.pointerId); activePointer = null; down = pointers.size > 0;
       };
       const pointerMove = (event: PointerEvent) => {
         if (down || event.pointerType === 'touch') return;
         const selected = pick(event);
-        renderer.domElement.style.cursor = selected === null ? 'grab' : 'pointer';
-        propsRef.current.onFloorHover?.(selected);
+        renderer.domElement.style.cursor = selected.floor === null && !selected.apartment ? 'grab' : 'pointer';
+        propsRef.current.onFloorHover?.(selected.floor);
       };
-      const pointerLeave = () => { down = false; propsRef.current.onFloorHover?.(null); };
+      const pointerLeave = () => { down = false; activePointer = null; pointers.clear(); propsRef.current.onFloorHover?.(null); };
       const contextLost = (event: Event) => { event.preventDefault(); if (!disposed) { disposed = true; cleanup?.(); setState('fallback'); } };
       host.addEventListener('pointerdown', pointerDown);
       host.addEventListener('pointerup', pointerUp);
       host.addEventListener('pointermove', pointerMove);
       host.addEventListener('pointerleave', pointerLeave);
+      host.addEventListener('pointercancel', pointerLeave);
       renderer.domElement.addEventListener('webglcontextlost', contextLost);
       const update = () => {
         const { mode, selectedFloor, hoveredFloor } = propsRef.current;
@@ -196,7 +214,18 @@ export default function BuildingScene(props: BuildingSceneProps) {
       const draw = () => {
         if (disposed) return;
         frame = requestAnimationFrame(draw);
+        if (propsRef.current.active === false) return;
         controls.update();
+        if (apartmentEntry && apartmentButtonRef.current) {
+          camera.updateMatrixWorld();
+          const projected = apartmentEntry.position.clone().project(camera);
+          const fromFront = camera.position.z > apartmentEntry.position.z;
+          const visible = fromFront && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < .92 && Math.abs(projected.y) < .94;
+          const button = apartmentButtonRef.current;
+          button.hidden = !visible;
+          button.style.left = `${host.offsetLeft + (projected.x + 1) * host.clientWidth / 2}px`;
+          button.style.top = `${host.offsetTop + (1 - projected.y) * host.clientHeight / 2}px`;
+        }
         if (canDraw && document.visibilityState !== 'hidden') { renderer.render(scene, camera); canDraw = false; }
       };
       let cleaned = false;
@@ -211,6 +240,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         host.removeEventListener('pointerup', pointerUp);
         host.removeEventListener('pointermove', pointerMove);
         host.removeEventListener('pointerleave', pointerLeave);
+        host.removeEventListener('pointercancel', pointerLeave);
         renderer.domElement.removeEventListener('webglcontextlost', contextLost);
         geometries.forEach(geometry => geometry.dispose());
         allMaterials.forEach(material => material.dispose());
@@ -263,6 +293,26 @@ export default function BuildingScene(props: BuildingSceneProps) {
         object.material = Array.isArray(object.material) ? cloned : cloned[0];
       });
       scene.add(model);
+      // One clearly marked entrance to the official pilot. This is a representative
+      // location, never a claim that the tour belongs to a numbered apartment here.
+      const entranceFloor = model.getObjectByName('Floor_18');
+      if (entranceFloor && propsRef.current.onApartmentSelect) {
+        const facade = new T.Box3().setFromObject(entranceFloor);
+        const width = (facade.max.x - facade.min.x) * .2;
+        const height = Math.min(facade.max.y - facade.min.y, 2.7);
+        const geometry = new T.BoxGeometry(width, height, .12);
+        const material = new T.MeshBasicMaterial({ color: 0xb8df70, transparent: true, opacity: .32, depthWrite: false });
+        apartmentEntry = new T.Mesh(geometry, material);
+        apartmentEntry.name = 'Apartment_Pilot_Entry';
+        apartmentEntry.userData.entryType = 'official-pilot';
+        apartmentEntry.position.set(T.MathUtils.lerp(facade.min.x, facade.max.x, .45), (facade.min.y + facade.max.y) / 2, facade.max.z + .18);
+        const edges = new T.EdgesGeometry(geometry);
+        const edgeMaterial = new T.LineBasicMaterial({ color: 0xd2ff8c });
+        apartmentEntry.add(new T.LineSegments(edges, edgeMaterial));
+        geometries.add(geometry); geometries.add(edges);
+        allMaterials.add(material); allMaterials.add(edgeMaterial);
+        scene.add(apartmentEntry);
+      }
       const box = new T.Box3().setFromObject(model);
       const extent = box.getSize(new T.Vector3());
       const center = box.getCenter(new T.Vector3());
@@ -282,7 +332,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
     return () => { disposed = true; cleanup?.(); };
   }, []);
 
-  useEffect(() => { apiRef.current?.update(); }, [props.mode, props.selectedFloor, props.hoveredFloor]);
+  useEffect(() => { apiRef.current?.update(); }, [props.mode, props.selectedFloor, props.hoveredFloor, props.active]);
 
   return <div className={`building-scene building-scene-${props.mode}`} data-state={state}>
     {state === 'fallback' ? <div className="scene-fallback"><img src={assetPath(`assets/eco-egana-${props.mode === 'day' ? 'day' : 'dusk'}.webp`)} alt="Render de referencia de Eco Egaña Norte" /><p>La vista 3D no está disponible en este dispositivo. Puedes seguir explorando con el selector de pisos.</p><a href={assetPath('models/eco-egana.glb')} download>Descargar modelo 3D (.glb)</a></div> : <>
@@ -295,7 +345,7 @@ export default function BuildingScene(props: BuildingSceneProps) {
         if (event.key === '0') { event.preventDefault(); apiRef.current.reset(); }
       }} />
       {state === 'loading' && <div className="scene-loading" role="status"><LoaderCircle className="scene-spinner" size={26} /><span>Construyendo tu perspectiva</span><small>{progress > 0 ? `${progress}%` : 'Cargando modelo de Blender'}</small></div>}
-      {state === 'ready' && <><div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
+      {state === 'ready' && <>{props.onApartmentSelect && <button ref={apartmentButtonRef} className="scene-apartment-entry" onClick={props.onApartmentSelect} aria-label="Entrar al departamento piloto en 3D desde la fachada"><DoorOpen size={17} /><span>Entrar al departamento<small>Piloto real · Interior amoblado</small></span></button>}<div className="scene-model-badge"><Box size={14} /> {software ? 'VISTA 3D SIMPLIFICADA' : 'MODELO 3D · BLENDER'}</div><div className="scene-camera-controls" role="group" aria-label="Cámara del modelo 3D">
         <button onClick={() => apiRef.current?.rotate(-1)} aria-label="Girar a la izquierda"><ChevronLeft size={18} /></button><button onClick={() => apiRef.current?.rotate(1)} aria-label="Girar a la derecha"><ChevronRight size={18} /></button><span />
         <button onClick={() => apiRef.current?.zoom(.84)} aria-label="Acercar modelo"><ZoomIn size={18} /></button><button onClick={() => apiRef.current?.zoom(1.18)} aria-label="Alejar modelo"><ZoomOut size={18} /></button><span />
         <button onClick={() => apiRef.current?.reset()} aria-label="Reiniciar vista"><RotateCcw size={17} /></button>
